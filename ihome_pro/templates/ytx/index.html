@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+     <script src="/static/js/jquery.min.js"></script>
+    <script>
+        var time1 = 10;
+        function setYzm() {
+            time1--;
+            if (time1 >= 0) {
+                $('#btnyz').val('再过' + time1 + '秒可再获取');
+            } else {
+                $('#btnyz').val('获取验证码').css('background-color', '#090');
+            }
+        }
+        $(function () {
+            $('#btnyz').click(function () {
+                $(this).prop('disabled', true).css('background-color', '#aaa');
+                time1 = 10;
+                setInterval('setYzm()', 1000);
+                $.post('/ytx/sendSMS', {'sjh': $('#sjh').val()}, function (data) {
+                    if (data.ok != 1) {
+                        alert('发送失败，请稍候重试');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<form method="post" action="/ytx/yz">
+    手机号：<input type="text" id="sjh">
+    <input type="button" id="btnyz" value="获取验证码" style="background-color: #090;color:#fff;">
+    <br>
+    短信验证码：<input type="text" name="yzm">
+    <br>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>
